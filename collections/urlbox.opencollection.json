@@ -1,0 +1,114 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Urlbox API",
+    "version": "1.0",
+    "description": "Website screenshot and rendering API for screenshots, PDFs, and video of any URL or HTML. Renders run synchronously, asynchronously (poll or webhook), or via signed HMAC render links."
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{urlbox_secret}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Render",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Create a synchronous render",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.urlbox.com/v1/render/sync",
+            "body": {
+              "type": "json",
+              "data": "{\"url\":\"https://example.com\",\"format\":\"png\",\"full_page\":true}"
+            }
+          },
+          "docs": "Render a screenshot, PDF, or video and block until the asset is ready. Returns 200 OK with renderUrl, size, renderTime, queueTime, and bandwidth."
+        },
+        {
+          "info": {
+            "name": "Create an asynchronous render",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.urlbox.com/v1/render/async",
+            "body": {
+              "type": "json",
+              "data": "{\"url\":\"https://example.com\",\"format\":\"pdf\",\"webhook_url\":\"https://your-app.example.com/urlbox/webhook\"}"
+            }
+          },
+          "docs": "Queue a render and return immediately with 201 Created, a renderId, and a statusUrl. Results are retrieved by polling or via the webhook_url callback."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Status",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Check render status",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.urlbox.com/v1/render/{{renderId}}"
+          },
+          "docs": "Poll the status of an asynchronous render: created, retrying, succeeded, failed, or not-found. Returns renderUrl and size once succeeded."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Render Links",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Render via signed link",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.urlbox.com/v1/{{urlbox_api_key}}/{{token}}/png?url=https://example.com",
+            "auth": {
+              "type": "none"
+            }
+          },
+          "docs": "Return a render directly from a stateless, cacheable URL. The token is an HMAC-SHA256 signature of the URL-encoded options query string, generated server-side with the project secret."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Usage",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get usage",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.urlbox.com/v1/usage"
+          },
+          "docs": "Return renders used, allowed, and remaining for the current billing period."
+        }
+      ]
+    }
+  ]
+}

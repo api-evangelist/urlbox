@@ -1,0 +1,85 @@
+aid: urlbox
+name: Urlbox
+review:
+  question: Does Urlbox expose a documented public WebSocket API?
+  answer: false
+  date: '2026-06-20'
+  reviewer: API Evangelist
+  asyncapiSpecCreated: false
+  asyncapiScopeNote: |
+    Urlbox has no WebSocket or SSE streaming surface. Its asynchronous model is
+    delivered over plain HTTP: clients either poll GET /render/{renderId} for
+    status, or register a webhook_url that receives an HTTP POST callback when a
+    render completes. Outbound HTTP webhooks are not an AsyncAPI-modeled channel
+    under current API Evangelist scope (which covers SSE and WebSocket), so no
+    AsyncAPI document was authored. The webhook surface is documented in apis.yml
+    (urlbox:urlbox-webhooks-api) and in the OpenAPI render options (webhook_url).
+findings:
+  summary: |
+    Urlbox does not publish a documented public WebSocket API. The render API is
+    REST over HTTPS under https://api.urlbox.com/v1. Renders can be created
+    synchronously (POST /render/sync, blocks until ready, ~95s sync timeout then
+    307 redirect), asynchronously (POST /render/async returns 201 with a renderId
+    and statusUrl), or via signed HMAC render links (GET /{api_key}/{token}/{format}).
+    Asynchronous results are retrieved by polling GET /render/{renderId} or via an
+    outbound HTTP webhook POST to a configured webhook_url. No realtime,
+    bidirectional, or streaming WebSocket (ws:// or wss://) endpoint is documented.
+  transports:
+    - protocol: REST
+      scheme: https
+      baseURL: https://api.urlbox.com/v1
+      documented: true
+    - protocol: Webhook
+      scheme: https
+      note: >-
+        Outbound HTTP POST callback to a customer webhook_url on render.succeeded
+        / render.failed, signed with an X-Urlbox-Signature HMAC-SHA256 header
+        (t={timestamp},sha256={token}). One-way server-to-client HTTP, not WebSocket.
+      documented: true
+    - protocol: WebSocket
+      scheme: wss
+      documented: false
+      note: No WebSocket endpoint is documented in Urlbox's API reference or any product page as of the review date.
+  endpointsConfirmedRest:
+    - POST https://api.urlbox.com/v1/render/sync
+    - POST https://api.urlbox.com/v1/render/async
+    - GET  https://api.urlbox.com/v1/render/{renderId}
+    - GET  https://api.urlbox.com/v1/{api_key}/{token}/{format}
+    - GET  https://api.urlbox.com/v1/usage
+  webhooks:
+    events:
+      - render.succeeded
+      - render.failed
+    signatureHeader: X-Urlbox-Signature
+    signatureFormat: t={timestamp},sha256={hmac_sha256_hex}
+    payloadFields:
+      - event
+      - renderId
+      - result.renderUrl
+      - result.size
+      - result.renderTime
+      - result.queueTime
+      - result.bandwidth
+      - meta.startTime
+      - meta.endTime
+sources:
+  - url: https://urlbox.com/docs/api
+    type: APIReference
+    note: Documents POST /render/sync, POST /render/async, GET /render/:renderId; all HTTPS REST.
+  - url: https://urlbox.com/docs/guides/sync-vs-async
+    type: Documentation
+    note: Async returns a statusUrl to poll; no WebSocket.
+  - url: https://urlbox.com/docs/render-links
+    type: Documentation
+    note: Signed HMAC-SHA256 GET render links, /v1/{api_key}/{token}/{format}.
+  - url: https://urlbox.com/docs/webhooks
+    type: Documentation
+    note: Webhook callbacks are outbound HTTP POST with X-Urlbox-Signature HMAC header; not WebSocket.
+actions:
+  asyncapiPath: null
+  apisYmlUpdated: true
+  reason: |
+    No WebSocket or SSE surface exists. Asynchronous delivery is via polling and
+    outbound HTTP webhooks, which are out of AsyncAPI scope, so no AsyncAPI
+    document was created. The webhook callback surface is catalogued as a
+    dedicated sub-API in apis.yml and referenced from the OpenAPI render options.

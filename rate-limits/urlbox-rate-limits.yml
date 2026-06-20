@@ -1,0 +1,78 @@
+specification: API Commons Rate Limits
+specificationVersion: '0.1'
+schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main/schema/api-commons.yml#/$defs/RateLimits
+provider: Urlbox
+providerId: urlbox
+created: '2026-06-20'
+modified: '2026-06-20'
+reconciled: true
+tags:
+- Screenshots
+- Rendering
+- PDF
+- Video
+- Web Capture
+- Rate Limiting
+- Quotas
+- Throttling
+description: >-
+  Urlbox enforces two layers of limits: a requests-per-minute (RPM) throttle that
+  scales by subscription tier, and a monthly render quota tied to each plan's
+  included render allowance. Requests served from cache do not count against the
+  render quota. Render usage is exposed on every response via x-renders-used,
+  x-renders-allowed, x-renders-remaining, and x-renders-reset headers, and
+  exceeding the RPM throttle returns HTTP 429.
+notes: >-
+  Per-minute values are published on the Urlbox pricing page and vary by tier;
+  monthly render quotas equal each plan's included render allowance. Verify on
+  reconciliation.
+sources:
+- https://urlbox.com/pricing
+- https://urlbox.com/docs/api
+responseCodes:
+  throttled: 429
+limits:
+- name: Requests Per Minute (Lo-Fi)
+  scope: account
+  metric: requests
+  limit: 30
+  notes: Lo-Fi tier per-minute request throttle.
+- name: Requests Per Minute (Hi-Fi)
+  scope: account
+  metric: requests
+  limit: 60
+  notes: Hi-Fi tier per-minute request throttle.
+- name: Requests Per Minute (Ultra)
+  scope: account
+  metric: requests
+  limit: 250
+  notes: Ultra tier per-minute request throttle.
+- name: Requests Per Minute (Business)
+  scope: account
+  metric: requests
+  limit: 1000
+  notes: Business tier per-minute request throttle.
+- name: Requests Per Minute (Enterprise)
+  scope: account
+  metric: requests
+  limit: unlimited
+  notes: Enterprise tier negotiated/unlimited per-minute throughput.
+- name: Monthly Render Quota
+  scope: account
+  metric: renders
+  limit: per plan allowance
+  notes: >-
+    Equal to the included render allowance of the active plan; over-quota usage
+    triggers an automatic tier upgrade. Cached renders are not counted.
+policies:
+- name: Cache Exemption
+  description: Requests served from the render cache do not count against the monthly render quota or RPM throttle.
+- name: Automatic Tier Upgrade
+  description: Sustained usage above the plan allowance automatically upgrades the account to the next tier.
+- name: Usage Headers
+  description: x-renders-used, x-renders-allowed, x-renders-remaining, and x-renders-reset headers report quota state on every response.
+- name: Backoff Strategy
+  description: Clients should implement exponential backoff with jitter on HTTP 429 responses.
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

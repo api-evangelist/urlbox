@@ -1,0 +1,505 @@
+openapi: 3.0.1
+info:
+  title: Urlbox API
+  description: >-
+    Urlbox is a website screenshot and rendering API for capturing screenshots,
+    PDFs, and video (MP4/WebM) of any URL or raw HTML. Renders can be requested
+    synchronously (POST /render/sync), asynchronously with polling or webhooks
+    (POST /render/async + GET /render/{renderId}), or via signed, cacheable
+    HMAC render links (GET /{api_key}/{token}/{format}).
+  termsOfService: https://urlbox.com/terms
+  contact:
+    name: Urlbox Support
+    url: https://urlbox.com/contact
+    email: support@urlbox.com
+  version: '1.0'
+servers:
+  - url: https://api.urlbox.com/v1
+    description: Urlbox v1 API
+security:
+  - BearerAuth: []
+tags:
+  - name: Render
+    description: Create screenshot, PDF, and video renders.
+  - name: Status
+    description: Poll the status of asynchronous renders.
+  - name: Render Links
+    description: Stateless, cacheable HMAC-signed GET render URLs.
+  - name: Usage
+    description: Account render usage for the current billing period.
+paths:
+  /render/sync:
+    post:
+      operationId: createSyncRender
+      tags:
+        - Render
+      summary: Create a synchronous render
+      description: >-
+        Renders a screenshot, PDF, or video of a URL or HTML and blocks until
+        the asset is ready. Responds 200 OK with a temporary renderUrl and
+        timing metrics. Long-running requests may return 307 Temporary Redirect
+        with a Location header after ~95 seconds.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RenderOptions'
+      responses:
+        '200':
+          description: Render completed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SyncRenderResult'
+        '307':
+          description: >-
+            Render still in progress after the sync timeout; follow the Location
+            header to retrieve the result when ready.
+          headers:
+            Location:
+              schema:
+                type: string
+                format: uri
+        '400':
+          $ref: '#/components/responses/Error'
+        '401':
+          $ref: '#/components/responses/Error'
+        '429':
+          $ref: '#/components/responses/Error'
+  /render/async:
+    post:
+      operationId: createAsyncRender
+      tags:
+        - Render
+      summary: Create an asynchronous render
+      description: >-
+        Accepts the same render options as the sync endpoint and returns
+        immediately with a renderId and statusUrl. The render is processed in
+        the background; results are retrieved by polling the status URL or via a
+        configured webhook_url callback.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RenderOptions'
+      responses:
+        '201':
+          description: Render accepted and queued.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AsyncRenderResponse'
+        '400':
+          $ref: '#/components/responses/Error'
+        '401':
+          $ref: '#/components/responses/Error'
+        '429':
+          $ref: '#/components/responses/Error'
+  /render/{renderId}:
+    get:
+      operationId: getRenderStatus
+      tags:
+        - Status
+      summary: Check render status
+      description: >-
+        Polls the status of an asynchronous render. Returns the current status
+        and, once succeeded, the renderUrl and size.
+      parameters:
+        - name: renderId
+          in: path
+          required: true
+          description: The renderId returned by POST /render/async.
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Current render status.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RenderStatus'
+        '401':
+          $ref: '#/components/responses/Error'
+        '404':
+          $ref: '#/components/responses/Error'
+  /{apiKey}/{token}/{format}:
+    get:
+      operationId: getRenderLink
+      tags:
+        - Render Links
+      summary: Render via a signed render link
+      description: >-
+        Returns a render directly from a stateless, cacheable URL. The token is
+        an HMAC-SHA256 signature of the URL-encoded options query string,
+        generated server-side with the project secret. Render options are passed
+        as query-string parameters (url or html is required).
+      security: []
+      parameters:
+        - name: apiKey
+          in: path
+          required: true
+          description: The project publishable API key.
+          schema:
+            type: string
+        - name: token
+          in: path
+          required: true
+          description: >-
+            HMAC-SHA256 hex signature of the URL-encoded options query string,
+            signed with the project secret. Use 'true' for unsigned links if the
+            project allows them.
+          schema:
+            type: string
+        - name: format
+          in: path
+          required: true
+          description: Output format for the render.
+          schema:
+            $ref: '#/components/schemas/RenderFormat'
+        - name: url
+          in: query
+          description: The website URL to render (required unless html is supplied).
+          schema:
+            type: string
+        - name: html
+          in: query
+          description: Raw HTML to render (required unless url is supplied).
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The rendered asset (image, PDF, or video binary).
+          content:
+            image/png:
+              schema:
+                type: string
+                format: binary
+            application/pdf:
+              schema:
+                type: string
+                format: binary
+            video/mp4:
+              schema:
+                type: string
+                format: binary
+        '400':
+          $ref: '#/components/responses/Error'
+        '401':
+          $ref: '#/components/responses/Error'
+  /usage:
+    get:
+      operationId: getUsage
+      tags:
+        - Usage
+      summary: Get account usage
+      description: >-
+        Returns the number of renders used, allowed, and remaining for the
+        current billing period. The same data is surfaced on every render
+        response via the x-renders-used, x-renders-allowed, and
+        x-renders-remaining response headers.
+      responses:
+        '200':
+          description: Current billing-period usage.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Usage'
+        '401':
+          $ref: '#/components/responses/Error'
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      description: Project secret key supplied as a Bearer token in the Authorization header.
+  responses:
+    Error:
+      description: Error response.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  schemas:
+    RenderFormat:
+      type: string
+      description: Output format of the render.
+      enum:
+        - png
+        - jpeg
+        - webp
+        - avif
+        - svg
+        - pdf
+        - html
+        - mp4
+        - webm
+        - md
+    RenderOptions:
+      type: object
+      description: >-
+        Render request options. Either url or html is required. This schema
+        covers commonly used options; see https://urlbox.com/docs/options for
+        the full catalog.
+      properties:
+        url:
+          type: string
+          description: The website URL to render. HTTP is prepended if missing.
+        html:
+          type: string
+          description: Raw HTML to render instead of a URL.
+        format:
+          $ref: '#/components/schemas/RenderFormat'
+        width:
+          type: integer
+          default: 1280
+          description: Viewport width in pixels.
+        height:
+          type: integer
+          default: 1024
+          description: Viewport height in pixels.
+        full_page:
+          type: boolean
+          default: false
+          description: Capture the entire scrollable area of the page.
+        full_width:
+          type: boolean
+          default: false
+          description: Capture horizontally scrollable content as well.
+        selector:
+          type: string
+          description: CSS selector to capture a specific element only.
+        clip:
+          type: string
+          description: Bounding box to capture as x,y,width,height.
+        retina:
+          type: boolean
+          default: false
+          description: Render at 2x device pixel ratio for high-DPI output.
+        thumb_width:
+          type: integer
+          description: Resize the output to this thumbnail width in pixels.
+        thumb_height:
+          type: integer
+          description: Resize the output to this thumbnail height in pixels.
+        quality:
+          type: integer
+          default: 80
+          description: JPEG/WebP quality (1-100).
+        transparent:
+          type: boolean
+          default: false
+          description: Render PNG/WebP with a transparent background.
+        dark_mode:
+          type: boolean
+          default: false
+          description: Emulate prefers-color-scheme dark.
+        block_ads:
+          type: boolean
+          description: Block advertising network requests.
+        hide_cookie_banners:
+          type: boolean
+          description: Hide cookie consent notices via injected CSS.
+        click_accept:
+          type: boolean
+          description: Click accept buttons on cookie banners.
+        hide_selector:
+          type: string
+          description: Comma-delimited CSS selectors to hide before capture.
+        click:
+          type: string
+          description: CSS selector to click before capture.
+        hover:
+          type: string
+          description: CSS selector to hover over before capture.
+        scroll_to:
+          type: string
+          description: CSS selector or pixel offset to scroll to before capture.
+        css:
+          type: string
+          description: Custom CSS to inject into the page.
+        js:
+          type: string
+          description: Custom JavaScript to execute in the page (Ultra+).
+        delay:
+          type: integer
+          default: 0
+          description: Milliseconds to wait before capture.
+        timeout:
+          type: integer
+          default: 30000
+          description: URL load timeout in milliseconds (5000-100000).
+        wait_until:
+          type: string
+          default: loaded
+          enum:
+            - domloaded
+            - mostrequestsfinished
+            - requestsfinished
+            - loaded
+          description: Page-load event to wait for before capture.
+        wait_for:
+          type: string
+          description: CSS selector to wait for before capture.
+        wait_to_leave:
+          type: string
+          description: CSS selector to wait to disappear before capture.
+        fail_on_4xx:
+          type: boolean
+          default: false
+          description: Fail the render on 4xx responses from the target URL.
+        fail_on_5xx:
+          type: boolean
+          default: false
+          description: Fail the render on 5xx responses from the target URL.
+        pdf_page_size:
+          type: string
+          default: A4
+          enum: [A0, A1, A2, A3, A4, A5, A6, Legal, Letter, Ledger, Tabloid]
+          description: PDF page size.
+        pdf_orientation:
+          type: string
+          default: portrait
+          enum: [portrait, landscape]
+          description: PDF page orientation.
+        pdf_margin:
+          type: string
+          default: none
+          enum: [none, default, minimum]
+          description: PDF margin preset.
+        pdf_scale:
+          type: number
+          default: 1
+          description: PDF scale factor (0.1-2.0).
+        pdf_background:
+          type: boolean
+          default: true
+          description: Include background images/colors in the PDF.
+        media:
+          type: string
+          enum: [print, screen]
+          description: CSS media type to emulate for PDF rendering.
+        cookie:
+          type: string
+          description: Cookie to set as name=value (supports multiple).
+        header:
+          type: string
+          description: Custom request header as name=value (HiFi+).
+        user_agent:
+          type: string
+          description: Custom user agent string or a preset (random, mobile, desktop).
+        accept_lang:
+          type: string
+          default: en-US
+          description: Accept-Language header value.
+        tz:
+          type: string
+          default: UTC
+          description: IANA timezone ID to emulate.
+        proxy:
+          type: string
+          description: Proxy as [user:pass@]address:port (Ultra+).
+        force:
+          type: boolean
+          default: false
+          description: Bypass the cache and generate a fresh render.
+        unique:
+          type: string
+          description: Cache-busting token (UUID, hash, or timestamp).
+        ttl:
+          type: integer
+          default: 2592000
+          description: Cache duration in seconds.
+        use_s3:
+          type: boolean
+          description: Save the render to the configured S3 bucket (HiFi+).
+        s3_path:
+          type: string
+          description: Destination path/filename within the S3 bucket (HiFi+).
+        webhook_url:
+          type: string
+          format: uri
+          description: >-
+            URL to receive a POST callback when an async render completes
+            (render.succeeded / render.failed).
+        response_type:
+          type: string
+          enum: [json, binary]
+          description: Whether to return JSON metadata or the binary asset.
+      oneOf:
+        - required: [url]
+        - required: [html]
+    SyncRenderResult:
+      type: object
+      properties:
+        renderUrl:
+          type: string
+          format: uri
+          description: Temporary URL pointing to the generated render.
+        size:
+          type: integer
+          description: Size of the render in bytes.
+        renderTime:
+          type: integer
+          description: Time spent rendering in milliseconds.
+        queueTime:
+          type: integer
+          description: Time spent queued in milliseconds.
+        bandwidth:
+          type: integer
+          description: Bandwidth consumed in bytes.
+    AsyncRenderResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: created
+        renderId:
+          type: string
+          format: uuid
+        statusUrl:
+          type: string
+          format: uri
+          description: URL to poll for the render status.
+    RenderStatus:
+      type: object
+      properties:
+        renderId:
+          type: string
+          format: uuid
+        status:
+          type: string
+          enum: [created, retrying, succeeded, failed, not-found]
+        renderUrl:
+          type: string
+          format: uri
+          description: Present once the render has succeeded.
+        size:
+          type: integer
+          description: Size of the render in bytes once succeeded.
+    Usage:
+      type: object
+      properties:
+        rendersUsed:
+          type: integer
+          description: Renders used in the current billing period.
+        rendersAllowed:
+          type: integer
+          description: Renders allowed in the current billing period.
+        rendersRemaining:
+          type: integer
+          description: Renders remaining in the current billing period.
+    Error:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            message:
+              type: string
+            code:
+              type: string
+        requestId:
+          type: string

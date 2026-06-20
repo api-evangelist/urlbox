@@ -1,0 +1,145 @@
+specification: API Commons Plans
+specificationVersion: '0.1'
+schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main/schema/api-commons.yml#/$defs/Plans
+provider: Urlbox
+providerId: urlbox
+created: '2026-06-20'
+modified: '2026-06-20'
+reconciled: true
+tags:
+- Screenshots
+- Rendering
+- PDF
+- Video
+- Web Capture
+- Plans
+description: >-
+  Urlbox prices on a per-render basis across fixed monthly tiers (Lo-Fi, Hi-Fi,
+  Ultra, Business) plus a custom Enterprise tier. Each tier bundles a monthly
+  render allowance and a request-per-minute rate limit, with higher tiers adding
+  4K/5K resolution, GPU acceleration, stealth/proxy features, and stronger uptime
+  SLAs. Over-quota usage triggers automatic tier upgrades, and requests served
+  from cache do not count against the render quota.
+notes: >-
+  Prices and allowances as published on the Urlbox pricing page; verify the
+  current tiers, render counts, and per-1,000 overage rates on the page during
+  reconciliation.
+sources:
+- https://urlbox.com/pricing
+- https://urlbox.com/docs
+plans:
+- id: urlbox-lofi
+  name: Lo-Fi
+  type: subscription
+  description: >-
+    Entry tier for affordable thumbnail and social-media image generation.
+  entries:
+  - label: Included Renders
+    name: lofi_renders
+    type: usage
+    metric: renders
+    limit: 2000
+    timeFrame: month
+    geo: global
+    unit: 1
+    price: $19 per month (~$9.50 per 1,000 renders)
+    userMultiplied: false
+  elements:
+  - name: Screenshots
+  - name: PDF
+  - name: Full Page Screenshots
+  - name: 30 requests/minute
+- id: urlbox-hifi
+  name: Hi-Fi
+  type: subscription
+  description: >-
+    Pixel-perfect screenshots with 4K/5K resolution and a 99.95% uptime SLA.
+  entries:
+  - label: Included Renders
+    name: hifi_renders
+    type: usage
+    metric: renders
+    limit: 5000
+    timeFrame: month
+    geo: global
+    unit: 1
+    price: $49 per month (~$9.80 per 1,000 renders)
+    userMultiplied: false
+  elements:
+  - name: Screenshots
+  - name: PDF
+  - name: Video
+  - name: 4K/5K Resolution
+  - name: Custom Headers
+  - name: S3 Storage
+  - name: 60 requests/minute
+- id: urlbox-ultra
+  name: Ultra
+  type: subscription
+  description: >-
+    High-volume tier with stealth mode, proxies, custom JS, LLM extraction, and
+    a 99.99% uptime SLA.
+  entries:
+  - label: Included Renders
+    name: ultra_renders
+    type: usage
+    metric: renders
+    limit: 15000
+    timeFrame: month
+    geo: global
+    unit: 1
+    price: $99 per month (~$6.60 per 1,000 renders)
+    userMultiplied: false
+  elements:
+  - name: Everything in Hi-Fi
+  - name: Stealth / Proxy
+  - name: Custom JavaScript
+  - name: Auto-Retry
+  - name: LLM Extraction
+  - name: 250 requests/minute
+- id: urlbox-business
+  name: Business
+  type: subscription
+  description: >-
+    Increased limits, GPU acceleration, SLAs, and security for production scale.
+  entries:
+  - label: Included Renders
+    name: business_renders
+    type: usage
+    metric: renders
+    limit: -1
+    timeFrame: month
+    geo: global
+    unit: 1
+    price: from $498 per month ($495 base + $3 per 1,000 additional renders)
+    userMultiplied: false
+  elements:
+  - name: Everything in Ultra
+  - name: GPU Acceleration
+  - name: Dedicated Support
+  - name: 1,000 requests/minute
+- id: urlbox-enterprise
+  name: Enterprise
+  type: enterprise
+  description: >-
+    Custom render limits, dedicated clusters, enhanced SLAs, and negotiated
+    terms. Contact Urlbox sales.
+  entries:
+  - label: Enterprise Agreement
+    name: enterprise
+    type: flat
+    metric: contract
+    limit: -1
+    timeFrame: month
+    geo: global
+    unit: 1
+    price: from $3,000 per month (contact sales)
+    userMultiplied: false
+  elements:
+  - name: Custom Render Limits
+  - name: Dedicated Clusters
+  - name: Custom SLA
+  - name: Unlimited requests/minute
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

@@ -1,0 +1,153 @@
+{
+  "info": {
+    "name": "Urlbox API",
+    "description": "Website screenshot and rendering API for screenshots, PDFs, and video of any URL or HTML. Renders run synchronously, asynchronously (poll or webhook), or via signed HMAC render links.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{urlbox_secret}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "https://api.urlbox.com/v1"
+    },
+    {
+      "key": "urlbox_secret",
+      "value": ""
+    },
+    {
+      "key": "urlbox_api_key",
+      "value": ""
+    },
+    {
+      "key": "renderId",
+      "value": ""
+    },
+    {
+      "key": "token",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "Render",
+      "item": [
+        {
+          "name": "Create Synchronous Render",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"url\": \"https://example.com\",\n  \"format\": \"png\",\n  \"full_page\": true,\n  \"width\": 1280,\n  \"height\": 1024\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/render/sync",
+              "host": ["{{baseUrl}}"],
+              "path": ["render", "sync"]
+            },
+            "description": "Render a screenshot, PDF, or video and block until the asset is ready. Returns 200 OK with renderUrl, size, renderTime, queueTime, and bandwidth."
+          }
+        },
+        {
+          "name": "Create Asynchronous Render",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"url\": \"https://example.com\",\n  \"format\": \"pdf\",\n  \"webhook_url\": \"https://your-app.example.com/urlbox/webhook\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/render/async",
+              "host": ["{{baseUrl}}"],
+              "path": ["render", "async"]
+            },
+            "description": "Queue a render and return immediately with 201 Created, a renderId, and a statusUrl. Results are retrieved by polling or via the webhook_url callback."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Status",
+      "item": [
+        {
+          "name": "Check Render Status",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/render/{{renderId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["render", "{{renderId}}"]
+            },
+            "description": "Poll the status of an asynchronous render: created, retrying, succeeded, failed, or not-found. Returns renderUrl and size once succeeded."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Render Links",
+      "item": [
+        {
+          "name": "Render via Signed Link",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/{{urlbox_api_key}}/{{token}}/png?url=https://example.com",
+              "host": ["{{baseUrl}}"],
+              "path": ["{{urlbox_api_key}}", "{{token}}", "png"],
+              "query": [
+                {
+                  "key": "url",
+                  "value": "https://example.com"
+                }
+              ]
+            },
+            "description": "Return a render directly from a stateless, cacheable URL. The token is an HMAC-SHA256 signature of the URL-encoded options query string, generated server-side with the project secret."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Usage",
+      "item": [
+        {
+          "name": "Get Usage",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/usage",
+              "host": ["{{baseUrl}}"],
+              "path": ["usage"]
+            },
+            "description": "Return renders used, allowed, and remaining for the current billing period."
+          }
+        }
+      ]
+    }
+  ]
+}
