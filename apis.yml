@@ -141,6 +141,14 @@ apis:
     period; usage is also surfaced on every render response via x-renders-used, x-renders-allowed,
     and x-renders-remaining headers.
 common:
+- type: TrustCenter
+  url: security/urlbox-trust-center.yml
+- type: VulnerabilityDisclosure
+  url: security/urlbox-vulnerability-disclosure.yml
+- type: DomainSecurity
+  url: security/urlbox-domain-security.yml
+- type: Authentication
+  url: authentication/urlbox-authentication.yml
 - type: GitHubOrganization
   url: https://github.com/urlbox
 - type: LinkedIn
