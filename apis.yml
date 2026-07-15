@@ -141,6 +141,8 @@ apis:
     period; usage is also surfaced on every render response via x-renders-used, x-renders-allowed,
     and x-renders-remaining headers.
 common:
+- type: AgenticAccess
+  url: agentic-access/urlbox-agentic-access.yml
 - type: TrustCenter
   url: security/urlbox-trust-center.yml
 - type: VulnerabilityDisclosure
