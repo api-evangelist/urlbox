@@ -1,12 +1,7 @@
 openapi: 3.0.1
 info:
-  title: Urlbox API
-  description: >-
-    Urlbox is a website screenshot and rendering API for capturing screenshots,
-    PDFs, and video (MP4/WebM) of any URL or raw HTML. Renders can be requested
-    synchronously (POST /render/sync), asynchronously with polling or webhooks
-    (POST /render/async + GET /render/{renderId}), or via signed, cacheable
-    HMAC render links (GET /{api_key}/{token}/{format}).
+  title: Urlbox Render API
+  description: Urlbox is a website screenshot and rendering API for capturing screenshots, PDFs, and video (MP4/WebM) of any URL or raw HTML. Renders can be requested synchronously (POST /render/sync), asynchronously with polling or webhooks (POST /render/async + GET /render/{renderId}), or via signed, cacheable HMAC render links (GET /{api_key}/{token}/{format}).
   termsOfService: https://urlbox.com/terms
   contact:
     name: Urlbox Support
@@ -14,31 +9,21 @@ info:
     email: support@urlbox.com
   version: '1.0'
 servers:
-  - url: https://api.urlbox.com/v1
-    description: Urlbox v1 API
+- url: https://api.urlbox.com/v1
+  description: Urlbox v1 API
 security:
-  - BearerAuth: []
+- BearerAuth: []
 tags:
-  - name: Render
-    description: Create screenshot, PDF, and video renders.
-  - name: Status
-    description: Poll the status of asynchronous renders.
-  - name: Render Links
-    description: Stateless, cacheable HMAC-signed GET render URLs.
-  - name: Usage
-    description: Account render usage for the current billing period.
+- name: Render
+  description: Create screenshot, PDF, and video renders.
 paths:
   /render/sync:
     post:
       operationId: createSyncRender
       tags:
-        - Render
+      - Render
       summary: Create a synchronous render
-      description: >-
-        Renders a screenshot, PDF, or video of a URL or HTML and blocks until
-        the asset is ready. Responds 200 OK with a temporary renderUrl and
-        timing metrics. Long-running requests may return 307 Temporary Redirect
-        with a Location header after ~95 seconds.
+      description: Renders a screenshot, PDF, or video of a URL or HTML and blocks until the asset is ready. Responds 200 OK with a temporary renderUrl and timing metrics. Long-running requests may return 307 Temporary Redirect with a Location header after ~95 seconds.
       requestBody:
         required: true
         content:
@@ -53,9 +38,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/SyncRenderResult'
         '307':
-          description: >-
-            Render still in progress after the sync timeout; follow the Location
-            header to retrieve the result when ready.
+          description: Render still in progress after the sync timeout; follow the Location header to retrieve the result when ready.
           headers:
             Location:
               schema:
@@ -71,13 +54,9 @@ paths:
     post:
       operationId: createAsyncRender
       tags:
-        - Render
+      - Render
       summary: Create an asynchronous render
-      description: >-
-        Accepts the same render options as the sync endpoint and returns
-        immediately with a renderId and statusUrl. The render is processed in
-        the background; results are retrieved by polling the status URL or via a
-        configured webhook_url callback.
+      description: Accepts the same render options as the sync endpoint and returns immediately with a renderId and statusUrl. The render is processed in the background; results are retrieved by polling the status URL or via a configured webhook_url callback.
       requestBody:
         required: true
         content:
@@ -97,152 +76,23 @@ paths:
           $ref: '#/components/responses/Error'
         '429':
           $ref: '#/components/responses/Error'
-  /render/{renderId}:
-    get:
-      operationId: getRenderStatus
-      tags:
-        - Status
-      summary: Check render status
-      description: >-
-        Polls the status of an asynchronous render. Returns the current status
-        and, once succeeded, the renderUrl and size.
-      parameters:
-        - name: renderId
-          in: path
-          required: true
-          description: The renderId returned by POST /render/async.
-          schema:
-            type: string
-            format: uuid
-      responses:
-        '200':
-          description: Current render status.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/RenderStatus'
-        '401':
-          $ref: '#/components/responses/Error'
-        '404':
-          $ref: '#/components/responses/Error'
-  /{apiKey}/{token}/{format}:
-    get:
-      operationId: getRenderLink
-      tags:
-        - Render Links
-      summary: Render via a signed render link
-      description: >-
-        Returns a render directly from a stateless, cacheable URL. The token is
-        an HMAC-SHA256 signature of the URL-encoded options query string,
-        generated server-side with the project secret. Render options are passed
-        as query-string parameters (url or html is required).
-      security: []
-      parameters:
-        - name: apiKey
-          in: path
-          required: true
-          description: The project publishable API key.
-          schema:
-            type: string
-        - name: token
-          in: path
-          required: true
-          description: >-
-            HMAC-SHA256 hex signature of the URL-encoded options query string,
-            signed with the project secret. Use 'true' for unsigned links if the
-            project allows them.
-          schema:
-            type: string
-        - name: format
-          in: path
-          required: true
-          description: Output format for the render.
-          schema:
-            $ref: '#/components/schemas/RenderFormat'
-        - name: url
-          in: query
-          description: The website URL to render (required unless html is supplied).
-          schema:
-            type: string
-        - name: html
-          in: query
-          description: Raw HTML to render (required unless url is supplied).
-          schema:
-            type: string
-      responses:
-        '200':
-          description: The rendered asset (image, PDF, or video binary).
-          content:
-            image/png:
-              schema:
-                type: string
-                format: binary
-            application/pdf:
-              schema:
-                type: string
-                format: binary
-            video/mp4:
-              schema:
-                type: string
-                format: binary
-        '400':
-          $ref: '#/components/responses/Error'
-        '401':
-          $ref: '#/components/responses/Error'
-  /usage:
-    get:
-      operationId: getUsage
-      tags:
-        - Usage
-      summary: Get account usage
-      description: >-
-        Returns the number of renders used, allowed, and remaining for the
-        current billing period. The same data is surfaced on every render
-        response via the x-renders-used, x-renders-allowed, and
-        x-renders-remaining response headers.
-      responses:
-        '200':
-          description: Current billing-period usage.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Usage'
-        '401':
-          $ref: '#/components/responses/Error'
 components:
-  securitySchemes:
-    BearerAuth:
-      type: http
-      scheme: bearer
-      description: Project secret key supplied as a Bearer token in the Authorization header.
-  responses:
-    Error:
-      description: Error response.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
   schemas:
-    RenderFormat:
-      type: string
-      description: Output format of the render.
-      enum:
-        - png
-        - jpeg
-        - webp
-        - avif
-        - svg
-        - pdf
-        - html
-        - mp4
-        - webm
-        - md
+    Error:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            message:
+              type: string
+            code:
+              type: string
+        requestId:
+          type: string
     RenderOptions:
       type: object
-      description: >-
-        Render request options. Either url or html is required. This schema
-        covers commonly used options; see https://urlbox.com/docs/options for
-        the full catalog.
+      description: Render request options. Either url or html is required. This schema covers commonly used options; see https://urlbox.com/docs/options for the full catalog.
       properties:
         url:
           type: string
@@ -335,10 +185,10 @@ components:
           type: string
           default: loaded
           enum:
-            - domloaded
-            - mostrequestsfinished
-            - requestsfinished
-            - loaded
+          - domloaded
+          - mostrequestsfinished
+          - requestsfinished
+          - loaded
           description: Page-load event to wait for before capture.
         wait_for:
           type: string
@@ -357,17 +207,33 @@ components:
         pdf_page_size:
           type: string
           default: A4
-          enum: [A0, A1, A2, A3, A4, A5, A6, Legal, Letter, Ledger, Tabloid]
+          enum:
+          - A0
+          - A1
+          - A2
+          - A3
+          - A4
+          - A5
+          - A6
+          - Legal
+          - Letter
+          - Ledger
+          - Tabloid
           description: PDF page size.
         pdf_orientation:
           type: string
           default: portrait
-          enum: [portrait, landscape]
+          enum:
+          - portrait
+          - landscape
           description: PDF page orientation.
         pdf_margin:
           type: string
           default: none
-          enum: [none, default, minimum]
+          enum:
+          - none
+          - default
+          - minimum
           description: PDF margin preset.
         pdf_scale:
           type: number
@@ -379,7 +245,9 @@ components:
           description: Include background images/colors in the PDF.
         media:
           type: string
-          enum: [print, screen]
+          enum:
+          - print
+          - screen
           description: CSS media type to emulate for PDF rendering.
         cookie:
           type: string
@@ -421,16 +289,45 @@ components:
         webhook_url:
           type: string
           format: uri
-          description: >-
-            URL to receive a POST callback when an async render completes
-            (render.succeeded / render.failed).
+          description: URL to receive a POST callback when an async render completes (render.succeeded / render.failed).
         response_type:
           type: string
-          enum: [json, binary]
+          enum:
+          - json
+          - binary
           description: Whether to return JSON metadata or the binary asset.
       oneOf:
-        - required: [url]
-        - required: [html]
+      - required:
+        - url
+      - required:
+        - html
+    RenderFormat:
+      type: string
+      description: Output format of the render.
+      enum:
+      - png
+      - jpeg
+      - webp
+      - avif
+      - svg
+      - pdf
+      - html
+      - mp4
+      - webm
+      - md
+    AsyncRenderResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: created
+        renderId:
+          type: string
+          format: uuid
+        statusUrl:
+          type: string
+          format: uri
+          description: URL to poll for the render status.
     SyncRenderResult:
       type: object
       properties:
@@ -450,56 +347,15 @@ components:
         bandwidth:
           type: integer
           description: Bandwidth consumed in bytes.
-    AsyncRenderResponse:
-      type: object
-      properties:
-        status:
-          type: string
-          example: created
-        renderId:
-          type: string
-          format: uuid
-        statusUrl:
-          type: string
-          format: uri
-          description: URL to poll for the render status.
-    RenderStatus:
-      type: object
-      properties:
-        renderId:
-          type: string
-          format: uuid
-        status:
-          type: string
-          enum: [created, retrying, succeeded, failed, not-found]
-        renderUrl:
-          type: string
-          format: uri
-          description: Present once the render has succeeded.
-        size:
-          type: integer
-          description: Size of the render in bytes once succeeded.
-    Usage:
-      type: object
-      properties:
-        rendersUsed:
-          type: integer
-          description: Renders used in the current billing period.
-        rendersAllowed:
-          type: integer
-          description: Renders allowed in the current billing period.
-        rendersRemaining:
-          type: integer
-          description: Renders remaining in the current billing period.
+  responses:
     Error:
-      type: object
-      properties:
-        error:
-          type: object
-          properties:
-            message:
-              type: string
-            code:
-              type: string
-        requestId:
-          type: string
+      description: Error response.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      description: Project secret key supplied as a Bearer token in the Authorization header.

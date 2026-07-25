@@ -1,0 +1,73 @@
+openapi: 3.0.1
+info:
+  title: Urlbox Render Usage API
+  description: Urlbox is a website screenshot and rendering API for capturing screenshots, PDFs, and video (MP4/WebM) of any URL or raw HTML. Renders can be requested synchronously (POST /render/sync), asynchronously with polling or webhooks (POST /render/async + GET /render/{renderId}), or via signed, cacheable HMAC render links (GET /{api_key}/{token}/{format}).
+  termsOfService: https://urlbox.com/terms
+  contact:
+    name: Urlbox Support
+    url: https://urlbox.com/contact
+    email: support@urlbox.com
+  version: '1.0'
+servers:
+- url: https://api.urlbox.com/v1
+  description: Urlbox v1 API
+security:
+- BearerAuth: []
+tags:
+- name: Usage
+  description: Account render usage for the current billing period.
+paths:
+  /usage:
+    get:
+      operationId: getUsage
+      tags:
+      - Usage
+      summary: Get account usage
+      description: Returns the number of renders used, allowed, and remaining for the current billing period. The same data is surfaced on every render response via the x-renders-used, x-renders-allowed, and x-renders-remaining response headers.
+      responses:
+        '200':
+          description: Current billing-period usage.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Usage'
+        '401':
+          $ref: '#/components/responses/Error'
+components:
+  responses:
+    Error:
+      description: Error response.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  schemas:
+    Usage:
+      type: object
+      properties:
+        rendersUsed:
+          type: integer
+          description: Renders used in the current billing period.
+        rendersAllowed:
+          type: integer
+          description: Renders allowed in the current billing period.
+        rendersRemaining:
+          type: integer
+          description: Renders remaining in the current billing period.
+    Error:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            message:
+              type: string
+            code:
+              type: string
+        requestId:
+          type: string
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      description: Project secret key supplied as a Bearer token in the Authorization header.
