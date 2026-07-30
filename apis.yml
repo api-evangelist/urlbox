@@ -7,7 +7,20 @@ description: Urlbox is a website screenshot and rendering API that captures pixe
   requested synchronously, asynchronously (with polling or webhooks), or via signed
   HMAC render links, with hundreds of options for full-page capture, element selectors,
   PDF layout, ad/cookie-banner blocking, waiting, and S3 storage.
-image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+accessModel:
+  pricing: paid
+  onboarding: self-serve
+  trial: false
+  try_now: false
+  public: false
+  label: Paid · Self-serve signup
+  confidence: high
+  source:
+  - plans
+  - authentication
+  generated: '2026-07-22'
+  method: derived
+image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/urlbox.png
 tags:
 - Screenshots
 - Rendering
@@ -18,128 +31,118 @@ created: '2026-06-20'
 modified: '2026-06-20'
 specificationVersion: '0.19'
 apis:
-- aid: urlbox:urlbox-render-sync-api
-  name: Urlbox Synchronous Render API
-  tags:
-  - Screenshots
-  - PDF
-  - Video
-  - Sync
-  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+- aid: urlbox:urlbox-render-api
+  name: Urlbox Render API
+  description: Create screenshot, PDF, and video renders.
   humanURL: https://urlbox.com/docs/api
   baseURL: https://api.urlbox.com/v1
-  properties:
-  - url: https://urlbox.com/docs/api
-    type: Documentation
-  - url: https://urlbox.com/docs/api
-    type: APIReference
-  - url: openapi/urlbox-openapi.yml
-    type: OpenAPI
-  - url: collections/urlbox.postman_collection.json
-    type: PostmanCollection
-  - url: collections/urlbox.opencollection.json
-    type: OpenCollection
-  description: POST /render/sync renders a screenshot, PDF, or video of a URL or HTML
-    and blocks until the asset is ready, returning a temporary renderUrl plus size,
-    renderTime, queueTime, and bandwidth metrics.
-- aid: urlbox:urlbox-render-async-api
-  name: Urlbox Asynchronous Render API
   tags:
-  - Async
-  - Queue
-  - Webhooks
-  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
-  humanURL: https://urlbox.com/docs/guides/sync-vs-async
-  baseURL: https://api.urlbox.com/v1
+  - Render
   properties:
-  - url: https://urlbox.com/docs/guides/sync-vs-async
-    type: Documentation
-  - url: openapi/urlbox-openapi.yml
-    type: OpenAPI
-  - url: collections/urlbox.postman_collection.json
-    type: PostmanCollection
-  - url: collections/urlbox.opencollection.json
-    type: OpenCollection
-  description: POST /render/async accepts the same render options and returns immediately
-    with a renderId and statusUrl (201 Created); the render is processed in the background
-    and results are retrieved by polling or via a webhook callback.
-- aid: urlbox:urlbox-render-status-api
-  name: Urlbox Render Status API
-  tags:
-  - Status
-  - Polling
-  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
-  humanURL: https://urlbox.com/docs/api
-  baseURL: https://api.urlbox.com/v1
-  properties:
-  - url: https://urlbox.com/docs/api
-    type: Documentation
-  - url: openapi/urlbox-openapi.yml
-    type: OpenAPI
-  - url: collections/urlbox.postman_collection.json
-    type: PostmanCollection
-  - url: collections/urlbox.opencollection.json
-    type: OpenCollection
-  description: GET /render/{renderId} polls the status of an asynchronous render, returning
-    created, retrying, succeeded, failed, or not-found, along with the renderUrl and
-    size once the render has succeeded.
+  - type: OpenAPI
+    url: openapi/urlbox-render-api-openapi.yml
+  - type: Documentation
+    url: https://urlbox.com/docs/api
+  - type: APIReference
+    url: https://urlbox.com/docs/api
+  - type: PostmanCollection
+    url: collections/urlbox.postman_collection.json
+  - type: OpenCollection
+    url: collections/urlbox.opencollection.json
+  - type: Documentation
+    url: https://urlbox.com/docs/guides/sync-vs-async
+  - type: Documentation
+    url: https://urlbox.com/docs/render-links
+  - type: Documentation
+    url: https://urlbox.com/docs/webhooks
+  - type: Review
+    url: review.yml
+  - type: Documentation
+    url: https://urlbox.com/docs/api/get-usage
 - aid: urlbox:urlbox-render-links-api
   name: Urlbox Render Links API
+  description: Stateless, cacheable HMAC-signed GET render URLs.
+  humanURL: https://urlbox.com/docs/api
+  baseURL: https://api.urlbox.com/v1
   tags:
   - Render Links
-  - HMAC
-  - Signed URL
-  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
-  humanURL: https://urlbox.com/docs/render-links
-  baseURL: https://api.urlbox.com/v1
   properties:
-  - url: https://urlbox.com/docs/render-links
-    type: Documentation
-  - url: openapi/urlbox-openapi.yml
-    type: OpenAPI
-  - url: collections/urlbox.postman_collection.json
-    type: PostmanCollection
-  - url: collections/urlbox.opencollection.json
-    type: OpenCollection
-  description: GET /{api_key}/{token}/{format} returns a render directly from a stateless,
-    cacheable URL, where token is an HMAC-SHA256 signature of the URL-encoded options
-    query string generated server-side with the project secret.
-- aid: urlbox:urlbox-webhooks-api
-  name: Urlbox Webhooks API
+  - type: OpenAPI
+    url: openapi/urlbox-render-links-api-openapi.yml
+  - type: Documentation
+    url: https://urlbox.com/docs/api
+  - type: APIReference
+    url: https://urlbox.com/docs/api
+  - type: PostmanCollection
+    url: collections/urlbox.postman_collection.json
+  - type: OpenCollection
+    url: collections/urlbox.opencollection.json
+  - type: Documentation
+    url: https://urlbox.com/docs/guides/sync-vs-async
+  - type: Documentation
+    url: https://urlbox.com/docs/render-links
+  - type: Documentation
+    url: https://urlbox.com/docs/webhooks
+  - type: Review
+    url: review.yml
+  - type: Documentation
+    url: https://urlbox.com/docs/api/get-usage
+- aid: urlbox:urlbox-status-api
+  name: Urlbox Status API
+  description: Poll the status of asynchronous renders.
+  humanURL: https://urlbox.com/docs/api
+  baseURL: https://api.urlbox.com/v1
   tags:
-  - Webhooks
-  - Callbacks
-  - Events
-  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
-  humanURL: https://urlbox.com/docs/webhooks
-  baseURL: https://api.urlbox.com/v1
+  - Status
   properties:
-  - url: https://urlbox.com/docs/webhooks
-    type: Documentation
-  - url: openapi/urlbox-openapi.yml
-    type: OpenAPI
-  - url: review.yml
-    type: Review
-  description: Async renders configured with a webhook_url receive a POST callback
-    carrying render.succeeded or render.failed events with the result payload, verified
-    via the X-Urlbox-Signature HMAC-SHA256 header.
+  - type: OpenAPI
+    url: openapi/urlbox-status-api-openapi.yml
+  - type: Documentation
+    url: https://urlbox.com/docs/api
+  - type: APIReference
+    url: https://urlbox.com/docs/api
+  - type: PostmanCollection
+    url: collections/urlbox.postman_collection.json
+  - type: OpenCollection
+    url: collections/urlbox.opencollection.json
+  - type: Documentation
+    url: https://urlbox.com/docs/guides/sync-vs-async
+  - type: Documentation
+    url: https://urlbox.com/docs/render-links
+  - type: Documentation
+    url: https://urlbox.com/docs/webhooks
+  - type: Review
+    url: review.yml
+  - type: Documentation
+    url: https://urlbox.com/docs/api/get-usage
 - aid: urlbox:urlbox-usage-api
   name: Urlbox Usage API
+  description: Account render usage for the current billing period.
+  humanURL: https://urlbox.com/docs/api
+  baseURL: https://api.urlbox.com/v1
   tags:
   - Usage
-  - Quota
-  - Account
-  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
-  humanURL: https://urlbox.com/docs/api/get-usage
-  baseURL: https://api.urlbox.com/v1
   properties:
-  - url: https://urlbox.com/docs/api/get-usage
-    type: Documentation
-  - url: openapi/urlbox-openapi.yml
-    type: OpenAPI
-  description: Reports renders used, allowed, and remaining for the current billing
-    period; usage is also surfaced on every render response via x-renders-used, x-renders-allowed,
-    and x-renders-remaining headers.
+  - type: OpenAPI
+    url: openapi/urlbox-usage-api-openapi.yml
+  - type: Documentation
+    url: https://urlbox.com/docs/api
+  - type: APIReference
+    url: https://urlbox.com/docs/api
+  - type: PostmanCollection
+    url: collections/urlbox.postman_collection.json
+  - type: OpenCollection
+    url: collections/urlbox.opencollection.json
+  - type: Documentation
+    url: https://urlbox.com/docs/guides/sync-vs-async
+  - type: Documentation
+    url: https://urlbox.com/docs/render-links
+  - type: Documentation
+    url: https://urlbox.com/docs/webhooks
+  - type: Review
+    url: review.yml
+  - type: Documentation
+    url: https://urlbox.com/docs/api/get-usage
 common:
 - type: AgenticAccess
   url: agentic-access/urlbox-agentic-access.yml
