@@ -1,0 +1,241 @@
+{
+  "item": [
+    {
+      "id": "e4c77e5c-1425-4aa4-9c08-cc68b5159bc7",
+      "name": "Status",
+      "description": {
+        "content": "Poll the status of asynchronous renders.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "9fd25ed4-9a30-4cc4-9dba-ae184e71a7ef",
+          "name": "Check render status",
+          "request": {
+            "name": "Check render status",
+            "description": {
+              "content": "Polls the status of an asynchronous render. Returns the current status and, once succeeded, the renderUrl and size.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "render",
+                ":renderId"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<uuid>",
+                  "key": "renderId",
+                  "description": "(Required) The renderId returned by POST /render/async."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "1647c607-958b-4700-9609-39fce0877897",
+              "name": "Current render status.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "render",
+                    ":renderId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "renderId",
+                      "description": "(Required) The renderId returned by POST /render/async."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"renderId\": \"7edb62b2-ad87-5388-6c21-19cc465546b0\",\n  \"status\": \"succeeded\",\n  \"renderUrl\": \"https://AVcNUtvKzW.hcY3nE.M-V3rzcPdpjH,3nhdqd\",\n  \"size\": 7247\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "24bb7751-3c4a-4631-a6c8-7570208cef45",
+              "name": "Error response.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "render",
+                    ":renderId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "renderId",
+                      "description": "(Required) The renderId returned by POST /render/async."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"message\": \"string\",\n    \"code\": \"string\"\n  },\n  \"requestId\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "afb33b66-a6e4-41a6-a5e4-3ba34736aab7",
+              "name": "Error response.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "render",
+                    ":renderId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "renderId",
+                      "description": "(Required) The renderId returned by POST /render/async."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"message\": \"string\",\n    \"code\": \"string\"\n  },\n  \"requestId\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.urlbox.com/v1",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "47f7069e-1607-4446-8bfc-91d4c0b528a7",
+    "name": "Urlbox Render Status API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "Urlbox is a website screenshot and rendering API for capturing screenshots, PDFs, and video (MP4/WebM) of any URL or raw HTML. Renders can be requested synchronously (POST /render/sync), asynchronously with polling or webhooks (POST /render/async + GET /render/{renderId}), or via signed, cacheable HMAC render links (GET /{api_key}/{token}/{format}).\n\nContact Support:\n Name: Urlbox Support\n Email: support@urlbox.com",
+      "type": "text/plain"
+    }
+  }
+}

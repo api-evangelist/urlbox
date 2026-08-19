@@ -1,0 +1,54 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Urlbox Render API",
+    "version": "1.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Render",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Create a synchronous render",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.urlbox.com/v1/render/sync",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Renders a screenshot, PDF, or video of a URL or HTML and blocks until the asset is ready. Responds 200 OK with a temporary renderUrl and timing metrics. Long-running requests may return 307 Temporary Redirect with a Location header after ~95 seconds."
+        },
+        {
+          "info": {
+            "name": "Create an asynchronous render",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.urlbox.com/v1/render/async",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Accepts the same render options as the sync endpoint and returns immediately with a renderId and statusUrl. The render is processed in the background; results are retrieved by polling the status URL or via a configured webhook_url callback."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

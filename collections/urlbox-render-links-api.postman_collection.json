@@ -1,0 +1,341 @@
+{
+  "item": [
+    {
+      "id": "e0fbdb76-2221-40b9-94d7-db713d680410",
+      "name": "Render Links",
+      "description": {
+        "content": "Stateless, cacheable HMAC-signed GET render URLs.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "6c3db045-db7b-42c7-bf9c-41bd87852e55",
+          "name": "Render via a signed render link",
+          "request": {
+            "name": "Render via a signed render link",
+            "description": {
+              "content": "Returns a render directly from a stateless, cacheable URL. The token is an HMAC-SHA256 signature of the URL-encoded options query string, generated server-side with the project secret. Render options are passed as query-string parameters (url or html is required).",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                ":apiKey",
+                ":token",
+                ":format"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "url",
+                  "value": "<string>",
+                  "description": "The website URL to render (required unless html is supplied)."
+                },
+                {
+                  "disabled": false,
+                  "key": "html",
+                  "value": "<string>",
+                  "description": "Raw HTML to render (required unless url is supplied)."
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "apiKey",
+                  "description": "(Required) The project publishable API key."
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "token",
+                  "description": "(Required) HMAC-SHA256 hex signature of the URL-encoded options query string, signed with the project secret. Use 'true' for unsigned links if the project allows them."
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "format",
+                  "description": "(Required) Output format for the render."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "image/png"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "d4f79ccc-77b9-427b-9aaf-c7b230f5b64b",
+              "name": "The rendered asset (image, PDF, or video binary).",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    ":apiKey",
+                    ":token",
+                    ":format"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "url",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "html",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "apiKey",
+                      "description": "(Required) The project publishable API key."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "token",
+                      "description": "(Required) HMAC-SHA256 hex signature of the URL-encoded options query string, signed with the project secret. Use 'true' for unsigned links if the project allows them."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "format",
+                      "description": "(Required) Output format for the render."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "image/png"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "image/png"
+                }
+              ],
+              "body": "string",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "43d5a255-906a-4b6f-8a8b-bf4517e22c02",
+              "name": "Error response.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    ":apiKey",
+                    ":token",
+                    ":format"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "url",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "html",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "apiKey",
+                      "description": "(Required) The project publishable API key."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "token",
+                      "description": "(Required) HMAC-SHA256 hex signature of the URL-encoded options query string, signed with the project secret. Use 'true' for unsigned links if the project allows them."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "format",
+                      "description": "(Required) Output format for the render."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"message\": \"string\",\n    \"code\": \"string\"\n  },\n  \"requestId\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "ac843b7c-4b84-4568-9851-6fff09dea0ec",
+              "name": "Error response.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    ":apiKey",
+                    ":token",
+                    ":format"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "url",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "html",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "apiKey",
+                      "description": "(Required) The project publishable API key."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "token",
+                      "description": "(Required) HMAC-SHA256 hex signature of the URL-encoded options query string, signed with the project secret. Use 'true' for unsigned links if the project allows them."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "format",
+                      "description": "(Required) Output format for the render."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": {\n    \"message\": \"string\",\n    \"code\": \"string\"\n  },\n  \"requestId\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.urlbox.com/v1",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "f8db8119-58d6-4ddf-9e53-f45efa593297",
+    "name": "Urlbox Render Render Links API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "Urlbox is a website screenshot and rendering API for capturing screenshots, PDFs, and video (MP4/WebM) of any URL or raw HTML. Renders can be requested synchronously (POST /render/sync), asynchronously with polling or webhooks (POST /render/async + GET /render/{renderId}), or via signed, cacheable HMAC render links (GET /{api_key}/{token}/{format}).\n\nContact Support:\n Name: Urlbox Support\n Email: support@urlbox.com",
+      "type": "text/plain"
+    }
+  }
+}

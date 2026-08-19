@@ -1,0 +1,67 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Urlbox Render Render Links API",
+    "version": "1.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Render Links",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Render via a signed render link",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.urlbox.com/v1/:apiKey/:token/:format",
+            "params": [
+              {
+                "name": "apiKey",
+                "value": "",
+                "type": "path",
+                "description": "The project publishable API key."
+              },
+              {
+                "name": "token",
+                "value": "",
+                "type": "path",
+                "description": "HMAC-SHA256 hex signature of the URL-encoded options query string, signed with the project secret. Use 'true' for unsigned links if the project allows them."
+              },
+              {
+                "name": "format",
+                "value": "",
+                "type": "path",
+                "description": "Output format for the render."
+              },
+              {
+                "name": "url",
+                "value": "",
+                "type": "query",
+                "description": "The website URL to render (required unless html is supplied)."
+              },
+              {
+                "name": "html",
+                "value": "",
+                "type": "query",
+                "description": "Raw HTML to render (required unless url is supplied)."
+              }
+            ]
+          },
+          "docs": "Returns a render directly from a stateless, cacheable URL. The token is an HMAC-SHA256 signature of the URL-encoded options query string, generated server-side with the project secret. Render options are passed as query-string parameters (url or html is required)."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

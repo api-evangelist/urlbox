@@ -1,0 +1,43 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Urlbox Render Status API",
+    "version": "1.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Status",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Check render status",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.urlbox.com/v1/render/:renderId",
+            "params": [
+              {
+                "name": "renderId",
+                "value": "",
+                "type": "path",
+                "description": "The renderId returned by POST /render/async."
+              }
+            ]
+          },
+          "docs": "Polls the status of an asynchronous render. Returns the current status and, once succeeded, the renderUrl and size."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

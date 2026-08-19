@@ -1,0 +1,35 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Urlbox Render Usage API",
+    "version": "1.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Usage",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get account usage",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.urlbox.com/v1/usage"
+          },
+          "docs": "Returns the number of renders used, allowed, and remaining for the current billing period. The same data is surfaced on every render response via the x-renders-used, x-renders-allowed, and x-renders-remaining response headers."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}
