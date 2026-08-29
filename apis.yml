@@ -7,6 +7,18 @@ description: Urlbox is a website screenshot and rendering API that captures pixe
   requested synchronously, asynchronously (with polling or webhooks), or via signed
   HMAC render links, with hundreds of options for full-page capture, element selectors,
   PDF layout, ad/cookie-banner blocking, waiting, and S3 storage.
+deliveryModel:
+  model: saas
+  open_source: false
+  commercial: true
+  callable_host: true
+  label: Hosted service · you call their endpoint
+  confidence: high
+  source:
+  - openapi
+  - pricing
+  generated: '2026-08-28'
+  method: derived
 accessModel:
   pricing: paid
   onboarding: self-serve
