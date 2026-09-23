@@ -1,6 +1,6 @@
-openapi: 3.0.1
+openapi: 3.2.0
 info:
-  title: Urlbox Render Usage API
+  title: Urlbox Usage API
   description: Urlbox is a website screenshot and rendering API for capturing screenshots, PDFs, and video (MP4/WebM) of any URL or raw HTML. Renders can be requested synchronously (POST /render/sync), asynchronously with polling or webhooks (POST /render/async + GET /render/{renderId}), or via signed, cacheable HMAC render links (GET /{api_key}/{token}/{format}).
   termsOfService: https://urlbox.com/terms
   contact:
@@ -42,18 +42,6 @@ components:
           schema:
             $ref: '#/components/schemas/Error'
   schemas:
-    Usage:
-      type: object
-      properties:
-        rendersUsed:
-          type: integer
-          description: Renders used in the current billing period.
-        rendersAllowed:
-          type: integer
-          description: Renders allowed in the current billing period.
-        rendersRemaining:
-          type: integer
-          description: Renders remaining in the current billing period.
     Error:
       type: object
       properties:
@@ -66,6 +54,18 @@ components:
               type: string
         requestId:
           type: string
+    Usage:
+      type: object
+      properties:
+        rendersUsed:
+          type: integer
+          description: Renders used in the current billing period.
+        rendersAllowed:
+          type: integer
+          description: Renders allowed in the current billing period.
+        rendersRemaining:
+          type: integer
+          description: Renders remaining in the current billing period.
   securitySchemes:
     BearerAuth:
       type: http

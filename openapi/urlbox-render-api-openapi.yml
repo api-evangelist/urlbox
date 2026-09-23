@@ -1,4 +1,4 @@
-openapi: 3.0.1
+openapi: 3.2.0
 info:
   title: Urlbox Render API
   description: Urlbox is a website screenshot and rendering API for capturing screenshots, PDFs, and video (MP4/WebM) of any URL or raw HTML. Renders can be requested synchronously (POST /render/sync), asynchronously with polling or webhooks (POST /render/async + GET /render/{renderId}), or via signed, cacheable HMAC render links (GET /{api_key}/{token}/{format}).
@@ -78,18 +78,25 @@ paths:
           $ref: '#/components/responses/Error'
 components:
   schemas:
-    Error:
+    SyncRenderResult:
       type: object
       properties:
-        error:
-          type: object
-          properties:
-            message:
-              type: string
-            code:
-              type: string
-        requestId:
+        renderUrl:
           type: string
+          format: uri
+          description: Temporary URL pointing to the generated render.
+        size:
+          type: integer
+          description: Size of the render in bytes.
+        renderTime:
+          type: integer
+          description: Time spent rendering in milliseconds.
+        queueTime:
+          type: integer
+          description: Time spent queued in milliseconds.
+        bandwidth:
+          type: integer
+          description: Bandwidth consumed in bytes.
     RenderOptions:
       type: object
       description: Render request options. Either url or html is required. This schema covers commonly used options; see https://urlbox.com/docs/options for the full catalog.
@@ -315,6 +322,18 @@ components:
       - mp4
       - webm
       - md
+    Error:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            message:
+              type: string
+            code:
+              type: string
+        requestId:
+          type: string
     AsyncRenderResponse:
       type: object
       properties:
@@ -328,25 +347,6 @@ components:
           type: string
           format: uri
           description: URL to poll for the render status.
-    SyncRenderResult:
-      type: object
-      properties:
-        renderUrl:
-          type: string
-          format: uri
-          description: Temporary URL pointing to the generated render.
-        size:
-          type: integer
-          description: Size of the render in bytes.
-        renderTime:
-          type: integer
-          description: Time spent rendering in milliseconds.
-        queueTime:
-          type: integer
-          description: Time spent queued in milliseconds.
-        bandwidth:
-          type: integer
-          description: Bandwidth consumed in bytes.
   responses:
     Error:
       description: Error response.
