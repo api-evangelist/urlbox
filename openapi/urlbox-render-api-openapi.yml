@@ -78,6 +78,31 @@ paths:
           $ref: '#/components/responses/Error'
 components:
   schemas:
+    AsyncRenderResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: created
+        renderId:
+          type: string
+          format: uuid
+        statusUrl:
+          type: string
+          format: uri
+          description: URL to poll for the render status.
+    Error:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            message:
+              type: string
+            code:
+              type: string
+        requestId:
+          type: string
     SyncRenderResult:
       type: object
       properties:
@@ -322,31 +347,6 @@ components:
       - mp4
       - webm
       - md
-    Error:
-      type: object
-      properties:
-        error:
-          type: object
-          properties:
-            message:
-              type: string
-            code:
-              type: string
-        requestId:
-          type: string
-    AsyncRenderResponse:
-      type: object
-      properties:
-        status:
-          type: string
-          example: created
-        renderId:
-          type: string
-          format: uuid
-        statusUrl:
-          type: string
-          format: uri
-          description: URL to poll for the render status.
   responses:
     Error:
       description: Error response.
