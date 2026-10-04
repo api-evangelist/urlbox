@@ -44,7 +44,26 @@ paths:
         '404':
           $ref: '#/components/responses/Error'
 components:
+  responses:
+    Error:
+      description: Error response.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
   schemas:
+    Error:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            message:
+              type: string
+            code:
+              type: string
+        requestId:
+          type: string
     RenderStatus:
       type: object
       properties:
@@ -66,25 +85,6 @@ components:
         size:
           type: integer
           description: Size of the render in bytes once succeeded.
-    Error:
-      type: object
-      properties:
-        error:
-          type: object
-          properties:
-            message:
-              type: string
-            code:
-              type: string
-        requestId:
-          type: string
-  responses:
-    Error:
-      description: Error response.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
   securitySchemes:
     BearerAuth:
       type: http
