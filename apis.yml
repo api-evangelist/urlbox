@@ -41,7 +41,7 @@ tags:
 - Video
 - Web Capture
 created: '2026-06-20'
-modified: '2026-06-20'
+modified: '2026-10-06'
 specificationVersion: '0.23'
 apis:
 - aid: urlbox:urlbox-render-api
@@ -157,6 +157,8 @@ apis:
   - type: Documentation
     url: https://urlbox.com/docs/api/get-usage
 common:
+- url: https://urlbox.com/blog
+  type: Blog
 - type: AgenticAccess
   url: agentic-access/urlbox-agentic-access.yml
 - type: TrustCenter
