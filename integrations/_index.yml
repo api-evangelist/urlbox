@@ -45,7 +45,7 @@
     app_slug: urlbox
     beta: false
     builder: unknown (not in the directory record)
-  status: pending-generation
+  status: not-a-workflow
   arazzo: null
 - slug: urlbox-n8n
   label: n8n
@@ -72,7 +72,7 @@
     published: '2026-01-30T13:58:23.700Z'
     matched_on: publisher-email
     builder: provider (package published from the provider's own domain)
-  status: pending-generation
+  status: not-a-workflow
   arazzo: null
 - slug: urlbox-wordpress-own
   label: WordPress (own)
