@@ -19,6 +19,71 @@
     registered_name: io.github.urlbox/screenshot-mcp-server
     register_id: io.github.urlbox/screenshot-mcp-server
     detected_by: sweep-agent-tools.py
-    detected: '2026-10-14'
+    detected: '2026-10-15'
+  status: not-a-workflow
+  arazzo: null
+- slug: urlbox-zapier
+  label: Zapier
+  partner: zapier
+  partner_name: Zapier
+  type: marketplace
+  marketplace: zapier-directory
+  channel: ipaas-listing
+  evidence: https://zapier.com/apps/urlbox/integrations
+  source: edge
+  relationship: ipaas-bridge
+  contract_reference:
+    register: Zapier app directory (zapier.com/api/v4/apps)
+    spec_file: null
+    role: ipaas-connector:zapier
+    registered_name: Urlbox
+    matched_domain: urlbox.com
+    matched_by: domain
+    detected_by: sweep-workflow-automation.py
+    detected: '2026-10-15'
+    signal_note: one edge per (provider, platform); actions, triggers and usage counts are context, never read
+    app_slug: urlbox
+    beta: false
+    builder: unknown (not in the directory record)
+  status: pending-generation
+  arazzo: null
+- slug: urlbox-n8n
+  label: n8n
+  partner: n8n
+  partner_name: n8n
+  type: marketplace
+  marketplace: n8n-community
+  channel: open-source-node
+  evidence: https://www.npmjs.com/package/@urlbox/n8n-nodes-urlbox
+  source: edge
+  relationship: ipaas-bridge
+  contract_reference:
+    register: n8n community nodes (npm keyword n8n-community-node-package)
+    spec_file: null
+    role: ipaas-connector:n8n-community
+    registered_name: '@urlbox/n8n-nodes-urlbox'
+    matched_domain: urlbox.com
+    matched_by: domain
+    detected_by: sweep-workflow-automation.py
+    detected: '2026-10-15'
+    signal_note: one edge per (provider, platform); actions, triggers and usage counts are context, never read
+    package: '@urlbox/n8n-nodes-urlbox'
+    version: 0.1.5
+    published: '2026-01-30T13:58:23.700Z'
+    matched_on: publisher-email
+    builder: provider (package published from the provider's own domain)
+  status: pending-generation
+  arazzo: null
+- slug: urlbox-wordpress-own
+  label: WordPress (own)
+  partner: wordpress
+  partner_name: WordPress (own)
+  category: WordPress plugin
+  type: marketplace
+  marketplace: own
+  channel: partner-built
+  evidence: https://wordpress.org/plugins/urlbox-screenshots/
+  source: edge
+  relationship: platform-app
   status: not-a-workflow
   arazzo: null

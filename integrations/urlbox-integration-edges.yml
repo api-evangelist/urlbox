@@ -14,7 +14,7 @@ edges:
     registered_name: io.github.urlbox/screenshot-mcp-server
     register_id: io.github.urlbox/screenshot-mcp-server
     detected_by: sweep-agent-tools.py
-    detected: '2026-10-14'
+    detected: '2026-10-15'
   mcp_registry:
     servers:
     - io.github.urlbox/screenshot-mcp-server
@@ -31,6 +31,58 @@ edges:
   - remote-domain
   detected_by: sweep-agent-tools.py
   first_seen: '2026-10-14'
+- partner_name: Zapier
+  partner: zapier
+  partner_match: aggregator
+  type: marketplace
+  marketplace: zapier-directory
+  channel: ipaas-listing
+  relationship: ipaas-bridge
+  direction: third-party
+  evidence: https://zapier.com/apps/urlbox/integrations
+  category: null
+  contract_reference:
+    register: Zapier app directory (zapier.com/api/v4/apps)
+    spec_file: null
+    role: ipaas-connector:zapier
+    registered_name: Urlbox
+    matched_domain: urlbox.com
+    matched_by: domain
+    detected_by: sweep-workflow-automation.py
+    detected: '2026-10-15'
+    signal_note: one edge per (provider, platform); actions, triggers and usage counts are context, never read
+    app_slug: urlbox
+    beta: false
+    builder: unknown (not in the directory record)
+  detected_by: sweep-workflow-automation.py
+  first_seen: '2026-10-15'
+- partner_name: n8n
+  partner: n8n
+  partner_match: aggregator
+  type: marketplace
+  marketplace: n8n-community
+  channel: open-source-node
+  relationship: ipaas-bridge
+  direction: provider-built
+  evidence: https://www.npmjs.com/package/@urlbox/n8n-nodes-urlbox
+  category: null
+  contract_reference:
+    register: n8n community nodes (npm keyword n8n-community-node-package)
+    spec_file: null
+    role: ipaas-connector:n8n-community
+    registered_name: '@urlbox/n8n-nodes-urlbox'
+    matched_domain: urlbox.com
+    matched_by: domain
+    detected_by: sweep-workflow-automation.py
+    detected: '2026-10-15'
+    signal_note: one edge per (provider, platform); actions, triggers and usage counts are context, never read
+    package: '@urlbox/n8n-nodes-urlbox'
+    version: 0.1.5
+    published: '2026-01-30T13:58:23.700Z'
+    matched_on: publisher-email
+    builder: provider (package published from the provider's own domain)
+  detected_by: sweep-workflow-automation.py
+  first_seen: '2026-10-15'
 - partner_name: WordPress (own)
   partner: wordpress
   partner_match: mirror
@@ -52,6 +104,9 @@ generated: '2026-10-14'
 method: searched
 checked:
 - https://registry.modelcontextprotocol.io/v0/servers
+- https://registry.npmjs.org/-/v1/search?text=keywords:n8n-community-node-package
+- https://zapier.com/api/v4/apps/
 - wordpress/integrations/wordpress-integration-edges.yml
 source:
-- wordpress/integrations/wordpress-integration-edges.yml
+- https://registry.npmjs.org/-/v1/search?text=keywords:n8n-community-node-package
+- https://zapier.com/api/v4/apps/
