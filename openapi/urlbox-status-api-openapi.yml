@@ -52,18 +52,6 @@ components:
           schema:
             $ref: '#/components/schemas/Error'
   schemas:
-    Error:
-      type: object
-      properties:
-        error:
-          type: object
-          properties:
-            message:
-              type: string
-            code:
-              type: string
-        requestId:
-          type: string
     RenderStatus:
       type: object
       properties:
@@ -85,6 +73,18 @@ components:
         size:
           type: integer
           description: Size of the render in bytes once succeeded.
+    Error:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            message:
+              type: string
+            code:
+              type: string
+        requestId:
+          type: string
   securitySchemes:
     BearerAuth:
       type: http
